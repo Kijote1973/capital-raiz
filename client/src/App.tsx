@@ -11,6 +11,7 @@ import ProcessSection from "./components/ProcessSection";
 import TrustSection from "./components/TrustSection";
 import ContactForm from "./components/ContactForm";
 import Footer from "./components/Footer";
+import WhatsAppButton from "./components/WhatsAppButton";
 
 /**
  * Capital Raíz Landing Page
@@ -64,6 +65,9 @@ function App() {
 
             {/* Footer */}
             <Footer onNavigate={handleNavigate} />
+
+            {/* WhatsApp Button */}
+            <WhatsAppButton />
           </div>
         </TooltipProvider>
       </ThemeProvider>
