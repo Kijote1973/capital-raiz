@@ -20,6 +20,7 @@ export default function Header({ onNavigate }: HeaderProps) {
   const navItems = [
     { label: 'Qué hacemos', id: 'value' },
     { label: 'Propiedades', id: 'properties' },
+    { label: 'Casos de Éxito', id: 'success' },
     { label: 'Proceso', id: 'process' },
     { label: 'Contacto', id: 'contact' },
   ];

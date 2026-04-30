@@ -197,7 +197,7 @@ export default function ContactForm() {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                placeholder="+56 9 0000 0000"
+                placeholder="+56 9 9076 1628"
                 className={`w-full px-4 py-3 rounded-lg border-2 transition-colors duration-200 focus:outline-none ${
                   errors.phone
                     ? 'border-red-500 bg-red-50 focus:border-red-600'
@@ -345,7 +345,7 @@ export default function ContactForm() {
                 <Phone className="w-6 h-6 text-accent" />
               </div>
               <p className="text-sm text-foreground/60">Teléfono</p>
-              <p className="font-semibold text-primary">+56 9 0000 0000</p>
+              <p className="font-semibold text-primary">+56 9 9076 1628</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-3">

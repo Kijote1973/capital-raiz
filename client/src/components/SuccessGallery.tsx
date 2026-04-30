@@ -121,7 +121,7 @@ export default function SuccessGallery() {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section id="success" className="py-16 md:py-24 bg-white">
       <div className="container">
         {/* Section Header */}
         <div className="text-center mb-12 md:mb-16">

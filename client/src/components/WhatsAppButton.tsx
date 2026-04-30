@@ -10,7 +10,7 @@ import { MessageCircle } from 'lucide-react';
  */
 
 export default function WhatsAppButton() {
-  const phoneNumber = '+56900000000'; // Capital Raíz phone number
+  const phoneNumber = '+56990761628'; // Capital Raíz phone number
   const message = 'Hola, me gustaría evaluar el potencial de mi propiedad.';
 
   const handleWhatsAppClick = () => {

@@ -87,11 +87,11 @@ export default function Footer({ onNavigate }: FooterProps) {
                 contacto@capitalraiz.cl
               </a>
               <a
-                href="tel:+56900000000"
+                href="tel:+56990761628"
                 className="flex items-center gap-2 text-white/70 hover:text-accent transition-colors text-sm"
               >
                 <Phone className="w-4 h-4" />
-                +56 9 0000 0000
+                +56 9 9076 1628
               </a>
               <div className="flex items-center gap-2 text-white/70 text-sm">
                 <MapPin className="w-4 h-4" />
