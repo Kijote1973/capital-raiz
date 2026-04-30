@@ -22,6 +22,7 @@ export default function Header({ onNavigate }: HeaderProps) {
     { label: 'Propiedades', id: 'properties' },
     { label: 'Casos de Éxito', id: 'success' },
     { label: 'Proceso', id: 'process' },
+    { label: 'FAQ', id: 'faq' },
     { label: 'Contacto', id: 'contact' },
   ];
 

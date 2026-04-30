@@ -11,6 +11,7 @@ import ProcessSection from "./components/ProcessSection";
 import TrustSection from "./components/TrustSection";
 import ContactForm from "./components/ContactForm";
 import SuccessGallery from "./components/SuccessGallery";
+import FAQ from "./components/FAQ";
 import Footer from "./components/Footer";
 import WhatsAppButton from "./components/WhatsAppButton";
 
@@ -62,6 +63,9 @@ function App() {
 
               {/* Success Gallery Section */}
               <SuccessGallery />
+
+              {/* FAQ Section */}
+              <FAQ />
 
               {/* Contact Form Section */}
               <ContactForm />
