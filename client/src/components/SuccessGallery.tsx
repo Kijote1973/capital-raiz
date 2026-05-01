@@ -129,7 +129,7 @@ export default function SuccessGallery() {
             <div className="divider-accent" />
           </div>
           <h2 className="heading-lg mb-4">
-            Casos de Éxito: Transformaciones Reales
+            Proyectos Realizados: Transformaciones Reales
           </h2>
           <p className="text-body text-lg max-w-2xl mx-auto">
             Descubre cómo hemos convertido propiedades subutilizadas en activos rentables con resultados concretos.
