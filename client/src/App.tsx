@@ -14,6 +14,7 @@ import SuccessGallery from "./components/SuccessGallery";
 import FAQ from "./components/FAQ";
 import Footer from "./components/Footer";
 import WhatsAppButton from "./components/WhatsAppButton";
+import ChatBot from "./components/ChatBot";
 
 /**
  * Capital Raíz Landing Page
@@ -76,6 +77,9 @@ function App() {
 
             {/* WhatsApp Button */}
             <WhatsAppButton />
+
+            {/* ChatBot */}
+            <ChatBot />
           </div>
         </TooltipProvider>
       </ThemeProvider>
