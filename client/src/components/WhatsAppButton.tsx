@@ -6,7 +6,7 @@ import { MessageCircle } from 'lucide-react';
  * - Fixed position with smooth animations
  * - Opens WhatsApp chat with pre-filled message
  * - Responsive and accessible
- * - Subtle hover effects
+ * - Positioned below ChatBot button
  */
 
 export default function WhatsAppButton() {
@@ -23,7 +23,7 @@ export default function WhatsAppButton() {
   return (
     <button
       onClick={handleWhatsAppClick}
-      className="fixed bottom-6 right-6 z-40 p-4 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95"
+      className="fixed bottom-32 right-6 z-40 w-14 h-14 p-0 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95 flex items-center justify-center"
       aria-label="Contactar por WhatsApp"
       title="Contactar por WhatsApp"
     >
