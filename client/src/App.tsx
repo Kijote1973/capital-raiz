@@ -2,6 +2,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { Route, Switch } from "wouter";
+import NotFound from "@/pages/NotFound";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -27,17 +29,16 @@ import ChatBot from "./components/ChatBot";
  * - Professional typography and subtle animations
  */
 
-function App() {
+function Router() {
   const handleNavigate = (section: string) => {
     const element = document.getElementById(section);
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
+    <Switch>
+      <Route path="/">
+        {() => (
           <div className="min-h-screen flex flex-col bg-white">
             {/* Header */}
             <Header onNavigate={handleNavigate} />
@@ -81,6 +82,21 @@ function App() {
             {/* ChatBot */}
             <ChatBot />
           </div>
+        )}
+      </Route>
+      <Route path="/404" component={NotFound} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <ThemeProvider defaultTheme="light">
+        <TooltipProvider>
+          <Toaster />
+          <Router />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

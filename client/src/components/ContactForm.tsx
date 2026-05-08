@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { trpc } from '@/lib/trpc';
 
 /**
  * ContactForm Component
  * Design: Professional contact form with validation
  * - 6 fields: Name, Phone, Email, Property Type, Location, Message
  * - Client-side validation
+ * - Server-side email sending via tRPC
  * - Success/error states
  * - Elegant styling consistent with brand
  */
@@ -44,7 +46,32 @@ export default function ContactForm() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  // tRPC mutation para enviar evaluación
+  const submitEvaluation = trpc.evaluation.submit.useMutation({
+    onSuccess: () => {
+      setSubmitted(true);
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+        propertyType: '',
+        location: '',
+        message: '',
+      });
+      setErrors({});
+      setErrorMessage('');
+
+      // Reset success message after 5 seconds
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 5000);
+    },
+    onError: (error) => {
+      setErrorMessage(error.message || 'Error al enviar la solicitud. Por favor intenta de nuevo.');
+    },
+  });
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -107,26 +134,8 @@ export default function ContactForm() {
       return;
     }
 
-    setIsLoading(true);
-
-    // Simulate form submission
-    setTimeout(() => {
-      setSubmitted(true);
-      setFormData({
-        name: '',
-        phone: '',
-        email: '',
-        propertyType: '',
-        location: '',
-        message: '',
-      });
-      setIsLoading(false);
-
-      // Reset success message after 5 seconds
-      setTimeout(() => {
-        setSubmitted(false);
-      }, 5000);
-    }, 1000);
+    // Enviar a través de tRPC
+    submitEvaluation.mutate(formData);
   };
 
   return (
@@ -155,6 +164,17 @@ export default function ContactForm() {
                 <p className="text-sm text-green-800">
                   Gracias por tu interés. Nos contactaremos pronto para evaluar tu propiedad.
                 </p>
+              </div>
+            </div>
+          )}
+
+          {/* Error Message */}
+          {errorMessage && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-red-900">Error</h3>
+                <p className="text-sm text-red-800">{errorMessage}</p>
               </div>
             </div>
           )}
@@ -252,10 +272,10 @@ export default function ContactForm() {
                     : 'border-border bg-white focus:border-accent'
                 }`}
               >
-                <option value="">Selecciona un tipo de propiedad</option>
-                {propertyTypeOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
+                <option value="">Selecciona un tipo...</option>
+                {propertyTypeOptions.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
                   </option>
                 ))}
               </select>
@@ -277,7 +297,7 @@ export default function ContactForm() {
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
-                placeholder="Ciudad, región o dirección"
+                placeholder="Ciudad, región o zona"
                 className={`w-full px-4 py-3 rounded-lg border-2 transition-colors duration-200 focus:outline-none ${
                   errors.location
                     ? 'border-red-500 bg-red-50 focus:border-red-600'
@@ -294,14 +314,14 @@ export default function ContactForm() {
             {/* Message Field */}
             <div className="mb-8">
               <label htmlFor="message" className="block text-sm font-semibold text-primary mb-2">
-                Mensaje *
+                Cuéntanos sobre tu propiedad *
               </label>
               <textarea
                 id="message"
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="Cuéntanos sobre tu propiedad y tus objetivos..."
+                placeholder="Describe el estado actual, desafíos y objetivos para tu propiedad..."
                 rows={5}
                 className={`w-full px-4 py-3 rounded-lg border-2 transition-colors duration-200 focus:outline-none resize-none ${
                   errors.message
@@ -319,40 +339,39 @@ export default function ContactForm() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isLoading}
-              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={submitEvaluation.isPending}
+              className="w-full bg-primary text-white font-semibold py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {isLoading ? 'Enviando...' : 'Solicitar evaluación'}
+              {submitEvaluation.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  <Mail className="w-4 h-4" />
+                  Solicitar Evaluación
+                </>
+              )}
             </button>
-
-            {/* Required Fields Note */}
-            <p className="text-xs text-foreground/60 mt-4 text-center">
-              Los campos marcados con * son obligatorios
-            </p>
           </form>
 
           {/* Contact Info */}
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-3">
-                <Mail className="w-6 h-6 text-accent" />
-              </div>
-              <p className="text-sm text-foreground/60">Email</p>
-              <p className="font-semibold text-primary">contacto@capitalraiz.cl</p>
+              <Phone className="w-8 h-8 text-accent mx-auto mb-3" />
+              <h3 className="font-semibold text-primary mb-1">Teléfono</h3>
+              <p className="text-body">+56 9 9076 1628</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-3">
-                <Phone className="w-6 h-6 text-accent" />
-              </div>
-              <p className="text-sm text-foreground/60">Teléfono</p>
-              <p className="font-semibold text-primary">+56 9 9076 1628</p>
+              <Mail className="w-8 h-8 text-accent mx-auto mb-3" />
+              <h3 className="font-semibold text-primary mb-1">Email</h3>
+              <p className="text-body">contacto@capitalraiz.cl</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mx-auto mb-3">
-                <MapPin className="w-6 h-6 text-accent" />
-              </div>
-              <p className="text-sm text-foreground/60">Ubicación</p>
-              <p className="font-semibold text-primary">Santiago, Chile</p>
+              <MapPin className="w-8 h-8 text-accent mx-auto mb-3" />
+              <h3 className="font-semibold text-primary mb-1">Ubicación</h3>
+              <p className="text-body">Santiago, Chile</p>
             </div>
           </div>
         </div>
