@@ -19,7 +19,7 @@ import WhatsAppButton from "./components/WhatsAppButton";
 import ChatBot from "./components/ChatBot";
 
 /**
- * Capital Raíz Landing Page
+ * Capital Raíz Landing Page - Versión Estática
  * 
  * Design Philosophy:
  * - Elegant, institutional aesthetic for real estate investment
@@ -27,6 +27,9 @@ import ChatBot from "./components/ChatBot";
  * - Mobile-first responsive design
  * - Smooth scroll navigation
  * - Professional typography and subtle animations
+ * 
+ * Nota: Esta es una versión completamente estática sin dependencias de backend.
+ * Funciona en cualquier servidor web estático (Hostinger, Netlify, Vercel, etc.)
  */
 
 function Router() {

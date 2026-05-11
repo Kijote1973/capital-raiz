@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
-import { trpc } from '@/lib/trpc';
 
 /**
- * ContactForm Component
+ * ContactForm Component - Versión Estática
  * Design: Professional contact form with validation
  * - 6 fields: Name, Phone, Email, Property Type, Location, Message
- * - Client-side validation
- * - Server-side email sending via tRPC
+ * - Client-side validation only
  * - Success/error states
  * - Elegant styling consistent with brand
+ * 
+ * Nota: Esta versión es completamente estática. Para enviar correos,
+ * necesitarías un backend o servicio como Formspree, Netlify Forms, etc.
  */
 
 interface FormData {
@@ -46,32 +47,7 @@ export default function ContactForm() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-
-  // tRPC mutation para enviar evaluación
-  const submitEvaluation = trpc.evaluation.submit.useMutation({
-    onSuccess: () => {
-      setSubmitted(true);
-      setFormData({
-        name: '',
-        phone: '',
-        email: '',
-        propertyType: '',
-        location: '',
-        message: '',
-      });
-      setErrors({});
-      setErrorMessage('');
-
-      // Reset success message after 5 seconds
-      setTimeout(() => {
-        setSubmitted(false);
-      }, 5000);
-    },
-    onError: (error) => {
-      setErrorMessage(error.message || 'Error al enviar la solicitud. Por favor intenta de nuevo.');
-    },
-  });
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -134,8 +110,31 @@ export default function ContactForm() {
       return;
     }
 
-    // Enviar a través de tRPC
-    submitEvaluation.mutate(formData);
+    setIsLoading(true);
+
+    // Simular envío de formulario
+    // En una versión con backend, aquí se enviarían los datos al servidor
+    setTimeout(() => {
+      // Log de los datos (en consola del navegador)
+      console.log('Datos del formulario:', formData);
+      
+      // Mostrar mensaje de éxito
+      setSubmitted(true);
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+        propertyType: '',
+        location: '',
+        message: '',
+      });
+      setIsLoading(false);
+
+      // Reset success message after 5 seconds
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 5000);
+    }, 1000);
   };
 
   return (
@@ -160,21 +159,10 @@ export default function ContactForm() {
             <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
               <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
-                <h3 className="font-semibold text-green-900">¡Solicitud enviada!</h3>
+                <h3 className="font-semibold text-green-900">¡Solicitud recibida!</h3>
                 <p className="text-sm text-green-800">
                   Gracias por tu interés. Nos contactaremos pronto para evaluar tu propiedad.
                 </p>
-              </div>
-            </div>
-          )}
-
-          {/* Error Message */}
-          {errorMessage && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <h3 className="font-semibold text-red-900">Error</h3>
-                <p className="text-sm text-red-800">{errorMessage}</p>
               </div>
             </div>
           )}
@@ -339,10 +327,10 @@ export default function ContactForm() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={submitEvaluation.isPending}
+              disabled={isLoading}
               className="w-full bg-primary text-white font-semibold py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {submitEvaluation.isPending ? (
+              {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
                   Enviando...
