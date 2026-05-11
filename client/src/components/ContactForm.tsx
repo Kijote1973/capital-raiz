@@ -2,15 +2,19 @@ import { useState } from 'react';
 import { Mail, Phone, MapPin, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
 /**
- * ContactForm Component - Versión Estática
+ * ContactForm Component - Con Formspree
  * Design: Professional contact form with validation
  * - 6 fields: Name, Phone, Email, Property Type, Location, Message
- * - Client-side validation only
+ * - Client-side validation
+ * - Envío a Formspree para recibir correos
  * - Success/error states
  * - Elegant styling consistent with brand
  * 
- * Nota: Esta versión es completamente estática. Para enviar correos,
- * necesitarías un backend o servicio como Formspree, Netlify Forms, etc.
+ * Integración con Formspree:
+ * 1. Visita https://formspree.io
+ * 2. Crea una cuenta gratuita
+ * 3. Crea un nuevo formulario y obtén el ID
+ * 4. Reemplaza "YOUR_FORMSPREE_ID" con tu ID real
  */
 
 interface FormData {
@@ -35,6 +39,10 @@ const propertyTypeOptions = [
   'Predio con opción de subdivisión',
 ];
 
+// IMPORTANTE: Reemplaza esto con tu ID de Formspree
+// Obtén tu ID en https://formspree.io
+const FORMSPREE_ID = "YOUR_FORMSPREE_ID";
+
 export default function ContactForm() {
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -48,6 +56,7 @@ export default function ContactForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -110,31 +119,56 @@ export default function ContactForm() {
       return;
     }
 
+    // Verificar que Formspree esté configurado
+    if (FORMSPREE_ID === "YOUR_FORMSPREE_ID") {
+      setErrorMessage('El formulario no está configurado. Por favor, contacta al administrador.');
+      return;
+    }
+
     setIsLoading(true);
+    setErrorMessage('');
 
-    // Simular envío de formulario
-    // En una versión con backend, aquí se enviarían los datos al servidor
-    setTimeout(() => {
-      // Log de los datos (en consola del navegador)
-      console.log('Datos del formulario:', formData);
-      
-      // Mostrar mensaje de éxito
-      setSubmitted(true);
-      setFormData({
-        name: '',
-        phone: '',
-        email: '',
-        propertyType: '',
-        location: '',
-        message: '',
+    try {
+      // Enviar a Formspree
+      const response = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          propertyType: formData.propertyType,
+          location: formData.location,
+          message: formData.message,
+        }),
       });
-      setIsLoading(false);
 
-      // Reset success message after 5 seconds
-      setTimeout(() => {
-        setSubmitted(false);
-      }, 5000);
-    }, 1000);
+      if (response.ok) {
+        setSubmitted(true);
+        setFormData({
+          name: '',
+          phone: '',
+          email: '',
+          propertyType: '',
+          location: '',
+          message: '',
+        });
+        setIsLoading(false);
+
+        // Reset success message after 5 seconds
+        setTimeout(() => {
+          setSubmitted(false);
+        }, 5000);
+      } else {
+        throw new Error('Error al enviar el formulario');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setErrorMessage('Error al enviar el formulario. Por favor intenta de nuevo.');
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -159,10 +193,21 @@ export default function ContactForm() {
             <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
               <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
-                <h3 className="font-semibold text-green-900">¡Solicitud recibida!</h3>
+                <h3 className="font-semibold text-green-900">¡Solicitud enviada!</h3>
                 <p className="text-sm text-green-800">
                   Gracias por tu interés. Nos contactaremos pronto para evaluar tu propiedad.
                 </p>
+              </div>
+            </div>
+          )}
+
+          {/* Error Message */}
+          {errorMessage && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-red-900">Error</h3>
+                <p className="text-sm text-red-800">{errorMessage}</p>
               </div>
             </div>
           )}
